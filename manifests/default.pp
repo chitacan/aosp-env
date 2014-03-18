@@ -8,6 +8,12 @@ file { 'site-config':
   require => Package['apache2'],
 }
 
+service { 'apache2':
+  ensure => 'running',
+  hasrestart => true,
+  subscribe => File['site-config']
+}
+
 file { '/vagrant/index.html':
   content => '<h1> vagrant + puppet</h1>',
 }
