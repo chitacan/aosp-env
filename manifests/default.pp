@@ -1,19 +1,31 @@
-package { 'apache2':
+case $operatingsystem {
+  ubuntu: {
+    $apache = 'apache2'
+    $configfile = '/etc/apache2/sites-enabled/000-default'
+  }
+}
+
+package { 'apache':
+  name   => $apache,
   ensure => 'installed',
 }
 
 file { 'site-config':
-  path => '/etc/apache2/sites-enabled/000-default',
-  source => '/vagrant/manifests/site-config',
-  require => Package['apache2'],
+  path    => $configfile,
+  source  => '/vagrant/manifests/site-config',
+  require => Package['apache'],
 }
 
-service { 'apache2':
-  ensure => 'running',
+service { 'apache':
+  name       => $apache,
+  ensure     => 'running',
   hasrestart => true,
-  subscribe => File['site-config']
+  subscribe  => File['site-config']
 }
 
 file { '/vagrant/index.html':
-  content => '<h1> vagrant + puppet</h1>',
+  content => "<h1> vagrant + puppet + ${apache} + ${operatingsystem}</h1>",
+}
+
+if $apache == 'apache2' {
 }
