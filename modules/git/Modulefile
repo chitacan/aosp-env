@@ -1,0 +1,10 @@
+name 'puppetlabs-git'
+version '0.0.4'
+source 'https://github.com/steakknife/steakknife-git.git'
+author 'Barry Allard, was puppetlabs'
+license 'Apache 2.0'
+summary 'module for installing git'
+description 'module for installing git'
+project_page 'https://github.com/steakknife/steakknife-git/'
+
+

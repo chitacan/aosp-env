@@ -1,0 +1,27 @@
+{
+  "name": "puppetlabs-git",
+  "version": "0.0.4",
+  "source": "https://github.com/steakknife/steakknife-git.git",
+  "author": "Barry Allard, was puppetlabs",
+  "license": "Apache 2.0",
+  "summary": "module for installing git",
+  "description": "module for installing git",
+  "project_page": "https://github.com/steakknife/steakknife-git/",
+  "dependencies": [
+
+  ],
+  "types": [
+
+  ],
+  "checksums": {
+    "CHANGELOG": "9313a2bc20a625be33b2811005106aba",
+    "LICENSE": "0e5ccf641e613489e66aa98271dbe798",
+    "Modulefile": "0ed50d6d6bf6ad67c0fd99a203884cc7",
+    "README": "f134dd975744e03458b27f4f62dd4aaa",
+    "manifests/gitolite.pp": "bbd6c162a04cd5a2ced829a8e4ea5305",
+    "manifests/gitosis.pp": "6b1bbd3a43baa63c63f5d03dcb9fbe95",
+    "manifests/init.pp": "58d5bfafd9a0e77c282c1f5df2966ed9",
+    "tests/gitosis.pp": "4a9f134fbd08096dac65aafa9fbc0742",
+    "tests/init.pp": "bbf47fdd0ad67c6fa1d47d39fdd6a94b"
+  }
+}
