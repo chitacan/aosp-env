@@ -1,0 +1,8 @@
+name    'alphagov-curl'
+version '0.0.1'
+source 'git://github.com/alphagov/puppet-curl.git'
+author 'Bob Walker'
+license 'Apache License, Version 2.0'
+summary 'Download files with curl'
+description 'A module for curl that allows downloading of files, supporting authentication. Inspired by http://github.com/maestrodev/puppet-wget'
+project_page 'http://github.com/alphagov/puppet-curl'
