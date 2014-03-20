@@ -1,14 +1,5 @@
 include curl
-
-exec { 'update':
-  path    => '/usr/bin',
-  command => 'apt-get update',
-}
-
-package { 'psp':
-  name   => 'python-software-properties',
-  ensure => 'installed'
-}
+include apt
 
 file { 'workspace':
   path   => '/home/vagrant/workspace',
@@ -18,8 +9,6 @@ file { 'workspace':
 }
 
 class java {
-  class { 'apt': }
-  apt::ppa { 'ppa:webupd8team/java': } ->
   # Prepare response file
   file { "/tmp/oracle-java6-installer.preseed":
     source => '/vagrant/java.response',
@@ -67,8 +56,11 @@ define aosp (
 }
 
 class packages {
-  package {[
+  package {
+    [
+      'tmux',
       'gnupg',
+      'python-software-properties',
       'git-core',
       'flex',
       'bison',
@@ -97,8 +89,7 @@ class packages {
   }
 }
 
-Exec['update']         ->
-Package['psp']         ->
+apt::ppa { ['ppa:webupd8team/java', 'ppa:pi-rho/dev']: } ->
 class { 'packages': }  ->
 class { 'java': }      ->
 class { 'repo': }      ->
