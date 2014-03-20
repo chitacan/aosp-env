@@ -14,7 +14,6 @@ Icon
 
 # vagrant
 .vagrant
-index.html
 
 ### vim ###
 .*.s[a-w][a-z]
