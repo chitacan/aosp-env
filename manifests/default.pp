@@ -24,7 +24,7 @@ class conf {
     group  => 'vagrant'
   } ->
   file { "/home/vagrant/.vimrc":
-    source => '/vagrant/files/.vimrc',
+    source => '/vagrant/files/vimrc',
     mode   => 600,
     owner  => 'vagrant',
     group  => 'vagrant'
