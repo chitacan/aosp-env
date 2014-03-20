@@ -65,6 +65,7 @@ define aosp (
 class packages {
   package {
     [
+      'make',
       'nodejs',
       'tmux',
       'gnupg',
