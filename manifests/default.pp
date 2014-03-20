@@ -67,47 +67,29 @@ define aosp (
 }
 
 class packages {
-  package {
-    'gnupg':
-      ensure => 'latest';
-    'git-core':
-      ensure => 'installed';
-    'flex':
-      ensure => 'installed';
-    'bison':
-      ensure => 'installed';
-    'zip':
-      ensure => 'installed';
-    'gperf':
-      ensure => 'installed';
-    'libc6-dev':
-      ensure => 'installed';
-    'libncurses5-dev:i386':
-      ensure => 'installed';
-    'x11proto-core-dev':
-      ensure => 'installed';
-    'libx11-dev:i386':
-      ensure => 'installed';
-    'libreadline6-dev:i386':
-      ensure => 'installed';
-    'libgl1-mesa-glx:i386':
-      ensure => 'installed';
-    'libgl1-mesa-dev':
-      ensure => 'installed';
-    'g++-multilib':
-      ensure => 'installed';
-    'mingw32':
-      ensure => 'installed';
-    'tofrodos':
-      ensure => 'installed';
-    'python-markdown':
-      ensure => 'installed';
-    'libxml2-utils':
-      ensure => 'installed';
-    'xsltproc':
-      ensure => 'installed';
-    'zlib1g-dev:i386':
-      ensure => 'installed';
+  package {[
+      'gnupg',
+      'git-core',
+      'flex',
+      'bison',
+      'zip',
+      'gperf',
+      'libc6-dev',
+      'libncurses5-dev:i386',
+      'x11proto-core-dev',
+      'libx11-dev:i386',
+      'libreadline6-dev:i386',
+      'libgl1-mesa-glx:i386',
+      'libgl1-mesa-dev',
+      'g++-multilib',
+      'mingw32',
+      'tofrodos',
+      'python-markdown',
+      'libxml2-utils',
+      'xsltproc',
+      'zlib1g-dev:i386',
+    ]:
+    ensure => 'installed';
   } ->
   file { '/usr/lib/i386-linux-gnu/libGL.so':
     ensure => 'link',
