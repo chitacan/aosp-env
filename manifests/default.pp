@@ -10,6 +10,13 @@ package { 'psp':
   ensure => 'installed'
 }
 
+file { 'workspace':
+  path   => '/home/vagrant/workspace',
+  ensure => 'directory',
+  owner  => 'vagrant',
+  group  => 'vagrant'
+}
+
 class java {
   class { 'apt': }
   apt::ppa { 'ppa:webupd8team/java': } ->
@@ -30,23 +37,32 @@ class java {
 class repo {
   curl::fetch { 'repo':
     source      => 'http://commondatastorage.googleapis.com/git-repo-downloads/repo',
-    destination => '/usr/bin/repo'
+    destination => '/usr/local/bin/repo'
   } ->
   file { 'change-premission':
-    path => '/usr/bin/repo',
-    mode => 'ugo+x'
-  } ->
-  file { ['/home/vagrant/workspace', '/home/vagrant/workspace/android-4.4_r1']:
+    path => '/usr/local/bin/repo',
+    mode => 'ugo+x',
+    owner  => 'vagrant',
+    group  => 'vagrant'
+  }
+}
+
+define aosp (
+  $branch='android-4.4_r1',
+  $url = "https://android.googlesource.com/platform/manifest"
+){
+  $cmd = "repo init -u ${url}-b ${branch}"
+  file { "/home/vagrant/workspace/${branch}":
     ensure => 'directory',
     owner  => 'vagrant',
     group  => 'vagrant'
   } ->
-  exec { 'init':
-    path    => '/usr/bin',
-    cwd     => '/home/vagrant/workspace/android-4.4_r1/',
-    command => 'repo init -u https://android.googlesource.com/platform/manifest -b android-4.4_r1',
-    user    => 'vagrant',
-    returns => 1
+  exec { "init-${branch}":
+    path      => ['/bin', '/usr/bin', '/usr/local/bin'],
+    cwd       => "/home/vagrant/workspace/${branch}",
+    command   => "sudo su -c '${cmd}' -s /bin/sh vagrant",
+    user      => 'vagrant',
+    group     => 'vagrant'
   }
 }
 
@@ -103,4 +119,12 @@ class { 'tmux': } ->
 class { 'git': }  ->
 class { 'java': } ->
 class { 'repo': } ->
+File['workspace'] ->
+aosp { 'android-4.4_r1': } ->
+aosp { 'android-4.1.2_r1':
+  branch => 'android-4.1.2_r1'
+} ->
+aosp { 'android-4.3_r1':
+  branch => 'android-4.3_r1'
+} ->
 class { 'packages': }
