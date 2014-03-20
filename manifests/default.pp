@@ -18,7 +18,7 @@ file { 'workspace':
 class java {
   # Prepare response file
   file { "/tmp/oracle-java6-installer.preseed":
-    source => '/vagrant/java.response',
+    source => '/vagrant/files/java.response',
     mode   => 600,
     backup => false,
   } ->
