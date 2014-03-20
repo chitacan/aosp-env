@@ -15,6 +15,37 @@ file { 'workspace':
   group  => 'vagrant'
 }
 
+class conf {
+  # install configuration files
+  file { "/home/vagrant/.tmux.conf":
+    source => '/vagrant/files/tmux.conf',
+    mode   => 600,
+    owner  => 'vagrant',
+    group  => 'vagrant'
+  } ->
+  file { "/home/vagrant/.vimrc":
+    source => '/vagrant/files/.vimrc',
+    mode   => 600,
+    owner  => 'vagrant',
+    group  => 'vagrant'
+  }
+}
+
+class vundle {
+  curl::fetch { 'unite':
+    source      => 'https://codeload.github.com/Shougo/unite.vim/zip/ver.5.1',
+    destination => '/home/vagrant/unite.zip'
+  } ->
+  curl::fetch { 'vimproc':
+    source      => 'https://codeload.github.com/Shougo/vimproc.vim/zip/ver.7.0',
+    destination => '/home/vagrant/vimproc.zip'
+  } ->
+  curl::fetch { 'vundle':
+    source      => 'https://codeload.github.com/gmarik/Vundle.vim/zip/ver.0.9.1',
+    destination => '/home/vagrant/vundle.zip'
+  }
+}
+
 class java {
   # Prepare response file
   file { "/tmp/oracle-java6-installer.preseed":
@@ -109,4 +140,6 @@ aosp { 'android-4.1.2_r1':
 } ->
 aosp { 'android-4.3_r1':
   branch => 'android-4.3_r1'
-}
+} ->
+class { 'conf': } ->
+class { 'vundle': }
