@@ -83,13 +83,14 @@ define aosp (
     ensure => 'directory',
     owner  => 'vagrant',
     group  => 'vagrant'
-  } ->
+  } ~>
   exec { "init-${branch}":
-    path      => ['/bin', '/usr/bin', '/usr/local/bin'],
-    cwd       => "/home/vagrant/workspace/${branch}",
-    command   => "sudo su -c '${cmd_init}' -s /bin/sh vagrant",
-    user      => 'vagrant',
-    group     => 'vagrant'
+    path        => ['/bin', '/usr/bin', '/usr/local/bin'],
+    cwd         => "/home/vagrant/workspace/${branch}",
+    command     => "sudo su -c '${cmd_init}' -s /bin/sh vagrant",
+    user        => 'vagrant',
+    group       => 'vagrant',
+    refreshonly => true
   }
 }
 
