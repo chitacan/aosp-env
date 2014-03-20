@@ -99,7 +99,6 @@ class packages {
 
 Exec['update']         ->
 Package['psp']         ->
-class { 'tmux': }      ->
 class { 'packages': }  ->
 class { 'java': }      ->
 class { 'repo': }      ->

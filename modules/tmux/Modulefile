@@ -1,8 +1,0 @@
-name    'shift-tmux'
-version '0.0.1'
-source 'https://github.com/shift/puppet-tmux.git'
-author 'shift'
-license 'Apache License, Version 2.0'
-summary 'Installs tmux from source'
-description 'Downloads the tmux source specified and compiles then installs.'
-project_page 'http://github.com/shift/puppet-tmux'
