@@ -51,7 +51,7 @@ define aosp (
   $branch='android-4.4_r1',
   $url = "https://android.googlesource.com/platform/manifest"
 ){
-  $cmd = "repo init -u ${url}-b ${branch}"
+  $cmd_init = "repo init -u ${url} -b ${branch}"
   file { "/home/vagrant/workspace/${branch}":
     ensure => 'directory',
     owner  => 'vagrant',
@@ -60,7 +60,7 @@ define aosp (
   exec { "init-${branch}":
     path      => ['/bin', '/usr/bin', '/usr/local/bin'],
     cwd       => "/home/vagrant/workspace/${branch}",
-    command   => "sudo su -c '${cmd}' -s /bin/sh vagrant",
+    command   => "sudo su -c '${cmd_init}' -s /bin/sh vagrant",
     user      => 'vagrant',
     group     => 'vagrant'
   }
@@ -70,6 +70,8 @@ class packages {
   package {
     'gnupg':
       ensure => 'latest';
+    'git-core':
+      ensure => 'installed';
     'flex':
       ensure => 'installed';
     'bison':
@@ -113,18 +115,17 @@ class packages {
   }
 }
 
-Exec['update']    ->
-Package['psp']    ->
-class { 'tmux': } ->
-class { 'git': }  ->
-class { 'java': } ->
-class { 'repo': } ->
-File['workspace'] ->
+Exec['update']         ->
+Package['psp']         ->
+class { 'tmux': }      ->
+class { 'packages': }  ->
+class { 'java': }      ->
+class { 'repo': }      ->
+File['workspace']      ->
 aosp { 'android-4.4_r1': } ->
 aosp { 'android-4.1.2_r1':
   branch => 'android-4.1.2_r1'
 } ->
 aosp { 'android-4.3_r1':
   branch => 'android-4.3_r1'
-} ->
-class { 'packages': }
+}
