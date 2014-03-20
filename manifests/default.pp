@@ -1,6 +1,13 @@
 include curl
 include apt
 
+$ppa_repo = ['ppa:webupd8team/java', 'ppa:pi-rho/dev', 'ppa:chris-lea/node.js']
+
+exec { 'update':
+  path    => '/usr/bin',
+  command => 'apt-get update'
+}
+
 file { 'workspace':
   path   => '/home/vagrant/workspace',
   ensure => 'directory',
@@ -58,9 +65,9 @@ define aosp (
 class packages {
   package {
     [
+      'nodejs',
       'tmux',
       'gnupg',
-      'python-software-properties',
       'git-core',
       'flex',
       'bison',
@@ -89,7 +96,8 @@ class packages {
   }
 }
 
-apt::ppa { ['ppa:webupd8team/java', 'ppa:pi-rho/dev']: } ->
+Exec['update'] ->
+apt::ppa { $ppa_repo: } ->
 class { 'packages': }  ->
 class { 'java': }      ->
 class { 'repo': }      ->
