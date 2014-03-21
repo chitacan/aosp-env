@@ -33,11 +33,12 @@ class conf {
 
 class vimbundle{
   define plugin(
-    $repo,
-    $install = "rsync -r /tmp/${name}/*/ /home/vagrant/.vim/"
+    $gh_user,
+    $gh_repo,
+    $install = "rsync -r /tmp/${gh_repo}-master/ /home/vagrant/.vim/"
   ) {
-    curl::fetch { $repo:
-      source      => "https://codeload.github.com/${repo}/zip/master",
+    curl::fetch { $name:
+      source      => "https://codeload.github.com/${gh_user}/${gh_repo}/zip/master",
       destination => "/tmp/${name}.zip"
     } ->
     file { $name:
@@ -47,16 +48,17 @@ class vimbundle{
     } ~>
     exec { $name:
       path        => '/usr/bin',
-      command     => "unzip /tmp/${name}.zip -d /tmp/${name} -x '*.gitignore' 'README.*' 'LICENSE*' ",
+      command     => "unzip /tmp/${name}.zip -d /tmp -x '*.gitignore' 'README.*' 'LICENSE*' ",
       user        => 'vagrant',
       group       => 'vagrant',
       refreshonly => true
     } ->
     exec { "install-${name}":
-      path      => ['/bin', '/usr/bin'],
-      command   => $install,
-      user      => 'vagrant',
-      group     => 'vagrant'
+      path    => ['/bin', '/usr/bin'],
+      command => $install,
+      cwd     => "/tmp/${gh_repo}-master/",
+      user    => 'vagrant',
+      group   => 'vagrant'
     }
   }
   file { ['/home/vagrant/.vim', '/home/vagrant/.vim/colors']:
@@ -65,17 +67,26 @@ class vimbundle{
     group  => 'vagrant'
   } ->
   plugin { 'unite':
-    repo => 'Shougo/unite.vim'
+    gh_user => 'Shougo',
+    gh_repo => 'unite.vim'
   } ->
   plugin { 'vundle':
-    repo => 'gmarik/Vundle.vim'
+    gh_user => 'gmarik',
+    gh_repo => 'Vundle.vim'
   } ->
-  plugin {
-    repo => 'tpope/vim-fugitive'
+  plugin { 'fugitive':
+    gh_user => 'tpope',
+    gh_repo => 'vim-fugitive'
+  } ->
+  plugin { 'vimproc':
+    gh_user => 'Shougo',
+    gh_repo => 'vimproc.vim',
+    install => 'make && rsync -r /tmp/vimproc.vim-master/autoload /tmp/vimproc.vim-master/plugin /home/vagrant/.vim/'
   } ->
   plugin { 'solarize':
-    repo    => 'altercation/vim-colors-solarized',
-    install => "cp /tmp/solarize/*/colors/* /home/vagrant/.vim/colors/"
+    gh_user => 'altercation',
+    gh_repo => 'vim-colors-solarized',
+    install => "cp /tmp/vim-colors-solarized-master/colors/* /home/vagrant/.vim/colors/"
   }
 }
 
