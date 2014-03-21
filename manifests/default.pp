@@ -130,7 +130,6 @@ define aosp (
 class packages {
   package {
     [
-      'vim',
       'make',
       'nodejs',
       'tmux',
@@ -164,6 +163,9 @@ class packages {
 }
 
 Exec['update'] ->
+package { 'vim':
+  ensure => 'installed'
+} ->
 apt::ppa { $ppa_repo: } ->
 class { 'packages': }  ->
 class { 'java': }      ->
