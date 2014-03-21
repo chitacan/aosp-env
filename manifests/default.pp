@@ -31,18 +31,51 @@ class conf {
   }
 }
 
-class vundle {
-  curl::fetch { 'unite':
-    source      => 'https://codeload.github.com/Shougo/unite.vim/zip/ver.5.1',
-    destination => '/home/vagrant/unite.zip'
+class vimbundle{
+  define plugin(
+    $repo,
+    $install = "rsync -r /tmp/${name}/*/ /home/vagrant/.vim/"
+  ) {
+    curl::fetch { $repo:
+      source      => "https://codeload.github.com/${repo}/zip/master",
+      destination => "/tmp/${name}.zip"
+    } ->
+    file { $name:
+      path  => "/tmp/${name}.zip",
+      owner => 'vagrant',
+      group => 'vagrant'
+    } ~>
+    exec { $name:
+      path        => '/usr/bin',
+      command     => "unzip /tmp/${name}.zip -d /tmp/${name} -x '*.gitignore' 'README.*' 'LICENSE*' ",
+      user        => 'vagrant',
+      group       => 'vagrant',
+      refreshonly => true
+    } ->
+    exec { "install-${name}":
+      path      => ['/bin', '/usr/bin'],
+      command   => $install,
+      user      => 'vagrant',
+      group     => 'vagrant'
+    }
+  }
+  file { ['/home/vagrant/.vim', '/home/vagrant/.vim/colors']:
+    ensure => 'directory',
+    owner  => 'vagrant',
+    group  => 'vagrant'
   } ->
-  curl::fetch { 'vimproc':
-    source      => 'https://codeload.github.com/Shougo/vimproc.vim/zip/ver.7.0',
-    destination => '/home/vagrant/vimproc.zip'
+  plugin { 'unite':
+    repo => 'Shougo/unite.vim'
   } ->
-  curl::fetch { 'vundle':
-    source      => 'https://codeload.github.com/gmarik/Vundle.vim/zip/ver.0.9.1',
-    destination => '/home/vagrant/vundle.zip'
+  plugin { 'vundle':
+    repo => 'gmarik/Vundle.vim'
+  } ->
+  plugin {
+    repo => 'tpope/vim-fugitive'
+  } ->
+  plugin { 'solarize':
+    repo    => 'altercation/vim-colors-solarized',
+    install => "cp /tmp/solarize/*/colors/* /home/vagrant/.vim/colors/"
   }
 }
 
@@ -97,6 +130,7 @@ define aosp (
 class packages {
   package {
     [
+      'vim',
       'make',
       'nodejs',
       'tmux',
@@ -143,4 +177,4 @@ aosp { 'android-4.3_r1':
   branch => 'android-4.3_r1'
 } ->
 class { 'conf': } ->
-class { 'vundle': }
+class { 'vimbundle': }
