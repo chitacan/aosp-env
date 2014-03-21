@@ -24,7 +24,6 @@ set ic
 set fo+=r
 set exrc
 set colorcolumn=80
-set list
 syntax enable
 
 colo solarized
