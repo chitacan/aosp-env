@@ -6,15 +6,17 @@ Provision [AOSP](http://s.android.com/index.html) development environment on [Ub
 
 * Make sure you have [Virtualbox](https://www.virtualbox.org/), [Vagrant](http://www.vagrantup.com/) (latest version required) on your machine.
 
-    $ git clone https://github.com/chitacan/aosp-env
-    $ cd aosp-env
-    $ vagrant up
-    $ vagrant ssh
-    vagrant$ cd workspace/android-4.4_r1
-    vagrant$ repo sync
-    vagrant$ . build/envsetup
-    vagrant$ lunch
-    vagrant$ make
+```
+$ git clone https://github.com/chitacan/aosp-env
+$ cd aosp-env
+$ vagrant up
+$ vagrant ssh
+vagrant$ cd workspace/android-4.4_r1
+vagrant$ repo sync
+vagrant$ . build/envsetup
+vagrant$ lunch
+vagrant$ make
+```
 
 ## What's included?
 
