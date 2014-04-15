@@ -115,6 +115,16 @@ class repo {
     mode => 'ugo+x',
     owner  => 'vagrant',
     group  => 'vagrant'
+  } ->
+  curl::fetch { 'pidcat':
+    source      => 'https://raw.githubusercontent.com/JakeWharton/pidcat/master/pidcat.py',
+    destination => '/usr/local/bin/pidcat'
+  } ->
+  file {
+    path  => '/usr/local/bin/pidcat',
+    mode  => 'ugo+x',
+    owner => 'vagrant',
+    group => 'vagrant'
   }
 }
 
