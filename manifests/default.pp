@@ -105,26 +105,29 @@ class java {
   package { "oracle-java6-set-default": ensure => "installed" }
 }
 
-class repo {
-  curl::fetch { 'repo':
-    source      => 'http://commondatastorage.googleapis.com/git-repo-downloads/repo',
-    destination => '/usr/local/bin/repo'
+class script {
+  define install(
+    $source,
+    $dest
+  ) {
+    curl::fetch { $name:
+      source      => $source,
+      destination => "/usr/local/bin/${dest}"
+    } ->
+    file { $name:
+      path => "/usr/local/bin/${dest}",
+      mode => 'ugo+x',
+      owner  => 'vagrant',
+      group  => 'vagrant'
+    }
+  }
+  install { 'repo':
+    source => 'http://commondatastorage.googleapis.com/git-repo-downloads/repo',
+    dest   => 'repo'
   } ->
-  file { 'change-premission':
-    path => '/usr/local/bin/repo',
-    mode => 'ugo+x',
-    owner  => 'vagrant',
-    group  => 'vagrant'
-  } ->
-  curl::fetch { 'pidcat':
-    source      => 'https://raw.githubusercontent.com/JakeWharton/pidcat/master/pidcat.py',
-    destination => '/usr/local/bin/pidcat'
-  } ->
-  file {
-    path  => '/usr/local/bin/pidcat',
-    mode  => 'ugo+x',
-    owner => 'vagrant',
-    group => 'vagrant'
+  install { 'pidcat':
+    source => 'https://raw.githubusercontent.com/JakeWharton/pidcat/master/pidcat.py',
+    dest   => 'pidcat'
   }
 }
 
@@ -190,7 +193,7 @@ package { 'vim':
 apt::ppa { $ppa_repo: } ->
 class { 'packages': }  ->
 class { 'java': }      ->
-class { 'repo': }      ->
+class { 'script': }    ->
 File['workspace']      ->
 aosp { 'android-4.4_r1': } ->
 aosp { 'android-4.1.2_r1':
