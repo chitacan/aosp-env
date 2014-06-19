@@ -4,7 +4,7 @@ Provision [AOSP](http://s.android.com/index.html) development environment on [Ub
 
 ## How to use
 
-* Make sure you have [Virtualbox](https://www.virtualbox.org/), [Vagrant](http://www.vagrantup.com/) (latest version required) on your machine.
+* Make sure you have [Virtualbox](https://www.virtualbox.org/), [Vagrant](http://www.vagrantup.com/) (1.5.0 or higher) on your machine.
 
 ```
 $ git clone https://github.com/chitacan/aosp-env
