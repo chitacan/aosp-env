@@ -11,13 +11,6 @@ exec { 'update':
   command => 'apt-get update'
 }
 
-file { 'workspace':
-  path   => "${HOME}/workspace",
-  ensure => 'directory',
-  owner  => 'vagrant',
-  group  => 'vagrant'
-}
-
 class conf {
   # install configuration files
   file { "${HOME}/.tmux.conf":
@@ -115,18 +108,18 @@ class java {
 }
 
 define aosp (
-  $branch='android-4.4_r1',
   $url = "https://android.googlesource.com/platform/manifest"
 ){
-  $cmd_init = "repo init -u ${url} -b ${branch}"
-  file { "${HOME}/workspace/${branch}":
-    ensure => 'directory',
-    owner  => 'vagrant',
-    group  => 'vagrant'
+  $cmd_init = "repo init -u ${url} -b ${title}"
+  exec { "create ${title} path":
+    path    => $PATH,
+    command => "mkdir -p ${HOME}/workspace/${title}",
+    user    => 'vagrant',
+    group   => 'vagrant'
   } ~>
-  exec { "init-${branch}":
+  exec { "repo-init ${title}":
     path        => $PATH,
-    cwd         => "${HOME}/workspace/${branch}",
+    cwd         => "${HOME}/workspace/${title}",
     environment => ["HOME=${HOME}"],
     command     => $cmd_init,
     logoutput   => on_failure,
@@ -206,13 +199,8 @@ apt::ppa { $PPA_REPO: } ->
 class { 'packages': }  ->
 class { 'java': }      ->
 class { 'brew': } ->
-File['workspace']      ->
-aosp { 'android-4.4_r1': } ->
-aosp { 'android-4.1.2_r1':
-  branch => 'android-4.1.2_r1'
-} ->
-aosp { 'android-4.3_r1':
-  branch => 'android-4.3_r1'
-} ->
+aosp { 'android-4.4_r1':   } ->
+aosp { 'android-4.1.2_r1': } ->
+aosp { 'android-4.3_r1':   } ->
 class { 'conf': } ->
 class { 'vimbundle': }
