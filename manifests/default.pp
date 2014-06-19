@@ -111,32 +111,6 @@ class java {
   package { "oracle-java6-set-default": ensure => "installed" }
 }
 
-class script {
-  define install(
-    $source,
-    $dest
-  ) {
-    curl::fetch { $name:
-      source      => $source,
-      destination => "/usr/local/bin/${dest}"
-    } ->
-    file { $name:
-      path => "/usr/local/bin/${dest}",
-      mode => 'ugo+x',
-      owner  => 'vagrant',
-      group  => 'vagrant'
-    }
-  }
-  install { 'repo':
-    source => 'http://commondatastorage.googleapis.com/git-repo-downloads/repo',
-    dest   => 'repo'
-  } ->
-  install { 'pidcat':
-    source => 'https://raw.githubusercontent.com/JakeWharton/pidcat/master/pidcat.py',
-    dest   => 'pidcat'
-  }
-}
-
 define aosp (
   $branch='android-4.4_r1',
   $url = "https://android.googlesource.com/platform/manifest"
@@ -176,7 +150,7 @@ class brew {
     user      => 'vagrant',
     group     => 'vagrant'
   } ->
-  install { ['tig']: }
+  install { ['tig', 'pidcat', 'repo']: }
 }
 
 class packages {
@@ -226,6 +200,7 @@ package { 'vim':
 apt::ppa { $ppa_repo: } ->
 class { 'packages': }  ->
 class { 'java': }      ->
+class { 'brew': } ->
 class { 'script': }    ->
 File['workspace']      ->
 aosp { 'android-4.4_r1': } ->
@@ -236,5 +211,4 @@ aosp { 'android-4.3_r1':
   branch => 'android-4.3_r1'
 } ->
 class { 'conf': } ->
-class { 'brew': } ->
 class { 'vimbundle': }
