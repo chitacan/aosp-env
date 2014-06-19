@@ -203,7 +203,6 @@ apt::ppa { $ppa_repo: } ->
 class { 'packages': }  ->
 class { 'java': }      ->
 class { 'brew': } ->
-class { 'script': }    ->
 File['workspace']      ->
 aosp { 'android-4.4_r1': } ->
 aosp { 'android-4.1.2_r1':
