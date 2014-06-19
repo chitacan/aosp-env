@@ -122,9 +122,11 @@ define aosp (
     group  => 'vagrant'
   } ~>
   exec { "init-${branch}":
-    path        => ['/bin', '/usr/bin', '/usr/local/bin'],
+    path        => ['/home/vagrant/.linuxbrew/bin', '/bin', '/usr/bin', '/usr/local/bin'],
     cwd         => "/home/vagrant/workspace/${branch}",
-    command     => "sudo su -c '${cmd_init}' -s /bin/sh vagrant",
+    environment => ["HOME=/home/vagrant"],
+    command     => $cmd_init,
+    logoutput   => on_failure,
     user        => 'vagrant',
     group       => 'vagrant',
     refreshonly => true
