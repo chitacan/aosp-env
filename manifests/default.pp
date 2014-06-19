@@ -1,15 +1,18 @@
 include curl
 include apt
 
-$ppa_repo = ['ppa:webupd8team/java', 'ppa:pi-rho/dev', 'ppa:chris-lea/node.js']
-
+$PPA_REPO = ['ppa:webupd8team/java', 'ppa:pi-rho/dev', 'ppa:chris-lea/node.js']
+$HOME     = '/home/vagrant'
+$GITHUB   = 'https://github.com'
+$BREW_BIN = "${HOME}/.linuxbrew/bin"
+$PATH     = [$BREW_BIN, '/bin', '/usr/bin', '/usr/local/bin', '/opt/vagrant_ruby/bin']
 exec { 'update':
-  path    => '/usr/bin',
+  path    => $PATH,
   command => 'apt-get update'
 }
 
 file { 'workspace':
-  path   => '/home/vagrant/workspace',
+  path   => "${HOME}/workspace",
   ensure => 'directory',
   owner  => 'vagrant',
   group  => 'vagrant'
@@ -17,19 +20,19 @@ file { 'workspace':
 
 class conf {
   # install configuration files
-  file { "/home/vagrant/.tmux.conf":
+  file { "${HOME}/.tmux.conf":
     source => '/vagrant/files/tmux.conf',
     mode   => 600,
     owner  => 'vagrant',
     group  => 'vagrant'
   } ->
-  file { "/home/vagrant/.vimrc":
+  file { "${HOME}/.vimrc":
     source => '/vagrant/files/vimrc',
     mode   => 600,
     owner  => 'vagrant',
     group  => 'vagrant'
   } ->
-  file { "/home/vagrant/.bash_profile":
+  file { "${HOME}/.bash_profile":
     source => '/vagrant/files/bash_profile',
     mode   => 600,
     owner  => 'vagrant',
@@ -41,7 +44,7 @@ class vimbundle{
   define plugin(
     $gh_user,
     $gh_repo,
-    $install = "rsync -r /tmp/${gh_repo}-master/ /home/vagrant/.vim/"
+    $install = "rsync -r /tmp/${gh_repo}-master/ ${HOME}/.vim/"
   ) {
     curl::fetch { $name:
       source      => "https://codeload.github.com/${gh_user}/${gh_repo}/zip/master",
@@ -53,21 +56,21 @@ class vimbundle{
       group => 'vagrant'
     } ~>
     exec { $name:
-      path        => '/usr/bin',
+      path        => $PATH,
       command     => "unzip /tmp/${name}.zip -d /tmp -x '*.gitignore' 'README.*' 'LICENSE*' ",
       user        => 'vagrant',
       group       => 'vagrant',
       refreshonly => true
     } ->
     exec { "install-${name}":
-      path    => ['/bin', '/usr/bin'],
+      path    => $PATH,
       command => $install,
       cwd     => "/tmp/${gh_repo}-master/",
       user    => 'vagrant',
       group   => 'vagrant'
     }
   }
-  file { ['/home/vagrant/.vim', '/home/vagrant/.vim/colors']:
+  file { ["${HOME}/.vim", "${HOME}/.vim/colors"]:
     ensure => 'directory',
     owner  => 'vagrant',
     group  => 'vagrant'
@@ -87,12 +90,12 @@ class vimbundle{
   plugin { 'vimproc':
     gh_user => 'Shougo',
     gh_repo => 'vimproc.vim',
-    install => 'make && rsync -r /tmp/vimproc.vim-master/autoload /tmp/vimproc.vim-master/plugin /home/vagrant/.vim/'
+    install => "make && rsync -r /tmp/vimproc.vim-master/autoload /tmp/vimproc.vim-master/plugin ${HOME}/.vim/"
   } ->
   plugin { 'solarize':
     gh_user => 'altercation',
     gh_repo => 'vim-colors-solarized',
-    install => "cp /tmp/vim-colors-solarized-master/colors/* /home/vagrant/.vim/colors/"
+    install => "cp /tmp/vim-colors-solarized-master/colors/* ${HOME}/.vim/colors/"
   }
 }
 
@@ -116,15 +119,15 @@ define aosp (
   $url = "https://android.googlesource.com/platform/manifest"
 ){
   $cmd_init = "repo init -u ${url} -b ${branch}"
-  file { "/home/vagrant/workspace/${branch}":
+  file { "${HOME}/workspace/${branch}":
     ensure => 'directory',
     owner  => 'vagrant',
     group  => 'vagrant'
   } ~>
   exec { "init-${branch}":
-    path        => ['/home/vagrant/.linuxbrew/bin', '/bin', '/usr/bin', '/usr/local/bin'],
-    cwd         => "/home/vagrant/workspace/${branch}",
-    environment => ["HOME=/home/vagrant"],
+    path        => $PATH,
+    cwd         => "${HOME}/workspace/${branch}",
+    environment => ["HOME=${HOME}"],
     command     => $cmd_init,
     logoutput   => on_failure,
     user        => 'vagrant',
@@ -136,18 +139,18 @@ define aosp (
 class brew {
   define install {
     exec { "install-${name}":
-      path        => ['/home/vagrant/.linuxbrew/bin', '/bin', '/usr/bin', '/usr/local/bin', '/opt/vagrant_ruby/bin'],
+      path        => $PATH,
       command     => "brew install ${name}",
-      environment => ["HOME=/home/vagrant"],
+      environment => ["HOME=${HOME}"],
       logoutput   => on_failure,
       user        => 'vagrant',
       group       => 'vagrant'
     }
   }
   exec { 'install-linuxbrew':
-    path      => '/usr/bin',
-    onlyif    => 'test ! -f /home/vagrant/.linuxbrew/bin/brew',
-    command   => 'git clone https://github.com/Homebrew/linuxbrew /home/vagrant/.linuxbrew',
+    path      => $PATH,
+    onlyif    => "test ! -f ${BREW_BIN}/brew",
+    command   => "git clone ${GITHUB}/Homebrew/linuxbrew ${HOME}/.linuxbrew",
     logoutput => on_failure,
     user      => 'vagrant',
     group     => 'vagrant'
@@ -199,7 +202,7 @@ Exec['update'] ->
 package { 'vim':
   ensure => 'installed'
 } ->
-apt::ppa { $ppa_repo: } ->
+apt::ppa { $PPA_REPO: } ->
 class { 'packages': }  ->
 class { 'java': }      ->
 class { 'brew': } ->
