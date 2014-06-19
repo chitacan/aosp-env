@@ -28,6 +28,12 @@ class conf {
     mode   => 600,
     owner  => 'vagrant',
     group  => 'vagrant'
+  } ->
+  file { "/home/vagrant/.bash_profile":
+    source => '/vagrant/files/bash_profile',
+    mode   => 600,
+    owner  => 'vagrant',
+    group  => 'vagrant'
   }
 }
 
