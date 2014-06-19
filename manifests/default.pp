@@ -157,6 +157,28 @@ define aosp (
   }
 }
 
+class brew {
+  define install {
+    exec { "install-${name}":
+      path        => ['/home/vagrant/.linuxbrew/bin', '/bin', '/usr/bin', '/usr/local/bin', '/opt/vagrant_ruby/bin'],
+      command     => "brew install ${name}",
+      environment => ["HOME=/home/vagrant"],
+      logoutput   => on_failure,
+      user        => 'vagrant',
+      group       => 'vagrant'
+    }
+  }
+  exec { 'install-linuxbrew':
+    path      => '/usr/bin',
+    onlyif    => 'test ! -f /home/vagrant/.linuxbrew/bin/brew',
+    command   => 'git clone https://github.com/Homebrew/linuxbrew /home/vagrant/.linuxbrew',
+    logoutput => on_failure,
+    user      => 'vagrant',
+    group     => 'vagrant'
+  } ->
+  install { ['tig']: }
+}
+
 class packages {
   package {
     [
@@ -183,6 +205,11 @@ class packages {
       'libxml2-utils',
       'xsltproc',
       'zlib1g-dev:i386',
+      'texinfo',
+      'libbz2-dev',
+      'libcurl4-openssl-dev',
+      'libexpat-dev',
+      'libncurses-dev'
     ]:
     ensure => 'installed';
   } ->
@@ -209,4 +236,5 @@ aosp { 'android-4.3_r1':
   branch => 'android-4.3_r1'
 } ->
 class { 'conf': } ->
+class { 'brew': } ->
 class { 'vimbundle': }
