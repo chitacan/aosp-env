@@ -30,6 +30,10 @@ class conf {
     mode   => 600,
     owner  => 'vagrant',
     group  => 'vagrant'
+  } ->
+  exec { "${HOME}/.bash_logout":
+    path    => $PATH,
+    command => "echo 'echo -ne \"\\\033]6;1;bg;*;default\\\a\"' >> ${HOME}/.bash_logout"
   }
 }
 
