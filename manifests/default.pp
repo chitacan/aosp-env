@@ -203,8 +203,6 @@ apt::ppa { $PPA_REPO: } ->
 class { 'packages': }  ->
 class { 'java': }      ->
 class { 'brew': } ->
-aosp { 'android-4.4_r1':   } ->
-aosp { 'android-4.1.2_r1': } ->
-aosp { 'android-4.3_r1':   } ->
+aosp  { "$aospversion": } ->
 class { 'conf': } ->
 class { 'vimbundle': }

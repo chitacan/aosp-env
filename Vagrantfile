@@ -20,6 +20,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     puppet.manifests_path = "manifests"
     puppet.manifest_file = "default.pp"
     puppet.options = ['--verbose', '--debug']
+    puppet.facter = {
+      "aospversion" => "android-4.4_r1"
+    }
   end
 
 end
