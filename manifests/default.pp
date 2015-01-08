@@ -1,7 +1,7 @@
 include curl
 include apt
 
-$PPA_REPO = ['ppa:webupd8team/java', 'ppa:pi-rho/dev', 'ppa:chris-lea/node.js']
+$PPA_REPO = ['ppa:pi-rho/dev', 'ppa:chris-lea/node.js']
 $HOME     = '/home/vagrant'
 $GITHUB   = 'https://github.com'
 $BREW_BIN = "${HOME}/.linuxbrew/bin"
@@ -96,21 +96,6 @@ class vimbundle{
   }
 }
 
-class java {
-  # Prepare response file
-  file { "/tmp/oracle-java6-installer.preseed":
-    source => '/vagrant/files/java.response',
-    mode   => 600,
-    backup => false,
-  } ->
-  # Install Java
-  package { "oracle-java6-installer":
-    ensure       => "installed",
-    responsefile => '/tmp/oracle-java6-installer.preseed'
-  } ->
-  package { "oracle-java6-set-default": ensure => "installed" }
-}
-
 define aosp (
   $url = "https://android.googlesource.com/platform/manifest"
 ){
@@ -158,6 +143,8 @@ class brew {
 class packages {
   package {
     [
+      'openjdk-7-jdk',
+      'vim',
       'make',
       'nodejs',
       'tmux',
@@ -196,12 +183,8 @@ class packages {
 }
 
 Exec['update'] ->
-package { 'vim':
-  ensure => 'installed'
-} ->
 apt::ppa { $PPA_REPO: } ->
 class { 'packages': }  ->
-class { 'java': }      ->
 class { 'brew': } ->
 aosp  { "$aospversion": } ->
 class { 'conf': } ->
