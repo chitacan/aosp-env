@@ -13,13 +13,14 @@ $ git clone https://github.com/chitacan/aosp-env
 $ cd aosp-env
 ```
 
-* Update your virtual machine configuration.
+* Update machine configurations.
 
 ```
+  config.vm.network "forwarded_port", guest: 22, host: 2020, auto_correct: true
   config.vm.provider "virtualbox" do |vb|
     vb.customize ["modifyvm", :id, "--memory",          (1024*16).to_s]
-    vb.customize ["modifyvm", :id, "--cpus",            "8"   ]
-    vb.customize ["modifyvm", :id, "--cpuexecutioncap", "80"  ]
+    vb.customize ["modifyvm", :id, "--cpus",            8   ]
+    vb.customize ["modifyvm", :id, "--cpuexecutioncap", 80  ]
   end
 ```
 

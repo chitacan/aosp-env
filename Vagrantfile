@@ -7,12 +7,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "hashicorp/precise64"
   config.vm.hostname = "robust-dev"
 
-  config.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
+  config.vm.network "forwarded_port", guest: 22, host: {port}, auto_correct: true
 
   config.vm.provider "virtualbox" do |vb|
-    vb.customize ["modifyvm", :id, "--memory",          "1024"]
-    vb.customize ["modifyvm", :id, "--cpus",            "1"   ]
-    vb.customize ["modifyvm", :id, "--cpuexecutioncap", "80"  ]
+    vb.customize ["modifyvm", :id, "--memory",          {memory} ]
+    vb.customize ["modifyvm", :id, "--cpus",            {cpus}   ]
+    vb.customize ["modifyvm", :id, "--cpuexecutioncap", {cpucap} ]
   end
 
   config.vm.provision "puppet" do |puppet|
@@ -21,7 +21,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     puppet.manifest_file = "default.pp"
     puppet.options = ['--verbose', '--debug']
     puppet.facter = {
-      "aospversion" => "android-4.4_r1"
+      "aospversion" => "{version}"
     }
   end
 
