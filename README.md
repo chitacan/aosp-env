@@ -29,7 +29,7 @@ $ cd aosp-env
 ```
   config.vm.provision "puppet" do |puppet|
     puppet.facter = {
-      "aospversion" => "android-4.4_r1"
+      "aospversion" => "android-5.0.2_r1"
     }
   end
 ```
@@ -42,7 +42,7 @@ $ cd aosp-env
 ```
 $ vagrant up
 $ vagrant ssh
-vagrant$ cd workspace/android-4.4_r1
+vagrant$ cd workspace/android-5.0.2_r1
 vagrant$ repo sync
 vagrant$ . build/envsetup
 vagrant$ lunch
